@@ -138,4 +138,30 @@ describe("bestHand", () => {
 
     expect(() => bestHand(tooFew)).toThrow("bestHand expects exactly 7 cards");
   });
+
+  it("selects the wheel (A-2-3-4-5) as best hand when no better hand exists", () => {
+    // A,2,3,4,5 straight (high card = 5) beats any high card hand
+    const cards = [
+      c("A", "H"), c("2", "D"), c("3", "C"), c("4", "S"), c("5", "H"),
+      c("K", "D"), c("Q", "C"),
+    ];
+
+    const result = bestHandResult(cards);
+
+    expect(result.category).toBe(HandCategory.STRAIGHT);
+    expect(result.ranks).toEqual([5]);
+  });
+
+  it("picks the 5 highest cards when there are 6 cards of the same suit", () => {
+    // 6 hearts: A K Q J 9 2 — best flush is A K Q J 9, not A K Q J 2
+    const cards = [
+      c("A", "H"), c("K", "H"), c("Q", "H"), c("J", "H"), c("9", "H"),
+      c("2", "H"), c("3", "D"),
+    ];
+
+    const result = bestHandResult(cards);
+
+    expect(result.category).toBe(HandCategory.FLUSH);
+    expect(result.ranks).toEqual([14, 13, 12, 11, 9]);
+  });
 });

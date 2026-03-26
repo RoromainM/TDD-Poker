@@ -68,4 +68,46 @@ describe("determineWinners", () => {
     expect(result.winners).toEqual(["Alice"]);
     expect(result.tie).toBe(false);
   });
+
+  it("kicker decides when all players share quads on the board", () => {
+    // Board: AH AD AC AS 2H — four aces on the board
+    // Alice: KH 7D → quads aces, K kicker (tiebreaker [14, 13])
+    // Bob:   QH JD → quads aces, Q kicker (tiebreaker [14, 12])
+    const board: Card[] = [
+      { rank: "A", suit: "H" },
+      { rank: "A", suit: "D" },
+      { rank: "A", suit: "C" },
+      { rank: "A", suit: "S" },
+      { rank: "2", suit: "H" },
+    ];
+
+    const result = determineWinners(board, [
+      { name: "Alice", cards: [{ rank: "K", suit: "H" }, { rank: "7", suit: "D" }] },
+      { name: "Bob",   cards: [{ rank: "Q", suit: "H" }, { rank: "J", suit: "D" }] },
+    ]);
+
+    expect(result.winners).toEqual(["Alice"]);
+    expect(result.tie).toBe(false);
+  });
+
+  it("declares a perfect tie when all players play the board", () => {
+    // Board: AH KH QH JH TH — royal flush on board
+    // All 3 players' hole cards cannot improve the board's royal flush
+    const board: Card[] = [
+      { rank: "A", suit: "H" },
+      { rank: "K", suit: "H" },
+      { rank: "Q", suit: "H" },
+      { rank: "J", suit: "H" },
+      { rank: "T", suit: "H" },
+    ];
+
+    const result = determineWinners(board, [
+      { name: "Alice",   cards: [{ rank: "2", suit: "C" }, { rank: "3", suit: "D" }] },
+      { name: "Bob",     cards: [{ rank: "4", suit: "C" }, { rank: "5", suit: "D" }] },
+      { name: "Charlie", cards: [{ rank: "6", suit: "C" }, { rank: "7", suit: "D" }] },
+    ]);
+
+    expect(result.winners).toEqual(["Alice", "Bob", "Charlie"]);
+    expect(result.tie).toBe(true);
+  });
 });

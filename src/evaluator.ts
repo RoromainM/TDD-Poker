@@ -27,17 +27,17 @@ function isFlush(cards: Card[]): boolean {
   return cards.every(c => c.suit === cards[0].suit);
 }
 
-function isStraight(values: number[]): boolean {
-  if (new Set(values).size !== 5) return false;
-  // Normal straight: consecutive values
-  if (values[0] - values[4] === 4) return true;
-  // A-low straight: A-2-3-4-5
+function isWheel(values: number[]): boolean {
   return values[0] === 14 && values[1] === 5 && values[2] === 4 && values[3] === 3 && values[4] === 2;
 }
 
+function isStraight(values: number[]): boolean {
+  if (new Set(values).size !== 5) return false;
+  return values[0] - values[4] === 4 || isWheel(values);
+}
+
 function straightHighCard(values: number[]): number {
-  if (values[0] === 14 && values[1] === 5) return 5;
-  return values[0];
+  return isWheel(values) ? 5 : values[0];
 }
 
 export function evaluateHand(cards: Card[]): HandResult {
