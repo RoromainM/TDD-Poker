@@ -36,7 +36,6 @@ function isStraight(values: number[]): boolean {
 }
 
 function straightHighCard(values: number[]): number {
-  // A-low straight: high card is 5
   if (values[0] === 14 && values[1] === 5) return 5;
   return values[0];
 }
