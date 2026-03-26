@@ -15,7 +15,7 @@ export interface GameResult {
 export function determineWinners(board: Card[], players: Player[]): GameResult {
   const playerResults = players.map((player) => ({
     name: player.name,
-    bestHand: bestHandResult([...player.cards, ...board]).cards,
+    bestHand: bestHandResult([...player.cards, ...board]).chosen5,
   }));
 
   let winners = [playerResults[0]];

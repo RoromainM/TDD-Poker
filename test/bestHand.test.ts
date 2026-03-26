@@ -70,9 +70,60 @@ describe("bestHand", () => {
 
     const result = bestHandResult(cards);
 
-    expect(result.cards.length).toBe(5);
-    expect(result.result.category).toBe(HandCategory.FULL_HOUSE);
-    expect(result.result.tieBreakers).toEqual([14, 13]);
+    expect(result.chosen5.length).toBe(5);
+    expect(result.category).toBe(HandCategory.FULL_HOUSE);
+    expect(result.ranks).toEqual([14, 13]);
+  });
+
+  it("returns exactly 5 cards in chosen5", () => {
+    const cards = [
+      c("A", "S"),
+      c("K", "S"),
+      c("Q", "S"),
+      c("J", "S"),
+      c("T", "S"),
+      c("2", "D"),
+      c("3", "C"),
+    ];
+
+    const result = bestHandResult(cards);
+
+    expect(result.chosen5).toHaveLength(5);
+  });
+
+  it("ensures chosen5 is a subset of the 7 input cards", () => {
+    const cards = [
+      c("A", "S"),
+      c("A", "H"),
+      c("K", "D"),
+      c("Q", "C"),
+      c("J", "S"),
+      c("2", "H"),
+      c("3", "D"),
+    ];
+
+    const result = bestHandResult(cards);
+    const inputSet = new Set(cards.map(cardId));
+
+    expect(result.chosen5.every((card) => inputSet.has(cardId(card)))).toBe(
+      true,
+    );
+  });
+
+  it("keeps coherent ranking order in ranks", () => {
+    const cards = [
+      c("A", "S"),
+      c("A", "H"),
+      c("A", "D"),
+      c("K", "C"),
+      c("K", "D"),
+      c("2", "S"),
+      c("3", "S"),
+    ];
+
+    const result = bestHandResult(cards);
+
+    expect(result.ranks).toEqual([14, 13]);
   });
 
   it("throws when input does not contain exactly 7 cards", () => {

@@ -1,10 +1,11 @@
 import { compareHands } from "./comparator.js";
 import { evaluateHand } from "./evaluator.js";
-import { Card, HandResult } from "./types.js";
+import { Card, HandCategory } from "./types.js";
 
 export interface BestHandResult {
-  cards: Card[];
-  result: HandResult;
+  category: HandCategory;
+  ranks: number[];
+  chosen5: Card[];
 }
 
 function combinationsOfFive(cards: Card[]): Card[][] {
@@ -54,9 +55,13 @@ export function bestHandResult(cards: Card[]): BestHandResult {
     }
   }
 
-  return best;
+  return {
+    category: best.result.category,
+    ranks: best.result.tieBreakers,
+    chosen5: best.cards,
+  };
 }
 
 export function bestHand(cards: Card[]): Card[] {
-  return bestHandResult(cards).cards;
+  return bestHandResult(cards).chosen5;
 }
